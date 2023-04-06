@@ -1,0 +1,18 @@
+[submodule "third_party/utils_simba"]
+	path = third_party/utils_simba
+	url = git@github.com:byran-wang/utils_simba.git
+[submodule "third_party/hand_detector.d2"]
+	path = third_party/hand_detector.d2
+	url = git@github.com:byran-wang/hand_detector.d2_hold.git
+[submodule "third_party/hamer"]
+	path = third_party/hamer
+	url = git@github.com:byran-wang/hamer.git
+[submodule "third_party/Cutie"]
+	path = third_party/Cutie
+	url = git@github.com:byran-wang/Cutie.git
+[submodule "third_party/Inpaint-Anything"]
+	path = third_party/Inpaint-Anything
+	url = git@github.com:byran-wang/Inpaint-Anything.git
+[submodule "third_party/Hierarchical-Localization_hold"]
+	path = third_party/Hierarchical-Localization_hold
+	url = git@github.com:byran-wang/Hierarchical-Localization_hold.git

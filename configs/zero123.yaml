@@ -1,0 +1,254 @@
+name: "zero123"
+tag: "${data.random_camera.height}_${rmspace:${basename:${data.image_path}},_}"
+exp_root_dir: "outputs"
+seed: 0
+
+data_type: "single-image-datamodule"
+data: # threestudio/data/image.py -> SingleImageDataModuleConfig
+  image_path: ??? # would be updated by update_cfg() for real_image_foundation_pose
+  root_dir: "/home/simba/Documents/project/hold-private/code/data/blender/MC1" # would be replaced by real_image_foundation_pose.data_dir when data_type is "real_image_foundation_pose"
+  rays_noise_scale: 0.0 # 2e-3
+  resolution_milestones: [200, 300]
+  cond_pose_from_selected_cam: True
+  default_elevation_deg: 10 # for blender data, would be updated to 17.2 by update_cfg() for real_image_foundation_pose inpaint_f
+  default_azimuth_deg: -20 # for blender data, would be updated to -33.4 by update_cfg() for real_image_foundation_pose inpaint_f
+  default_camera_distance: 2.0 # fixed for zero123
+  default_fovy_deg: 49.1  # for blender data, would be updated to 42.4885 by update_cfg() for real_image_foundation_pose inpaint_f
+  requires_depth: ${cmaxgt0orcmaxgt0:${system.loss.lambda_depth},${system.loss.lambda_depth_rel}}
+  requires_normal: ${cmaxgt0:${system.loss.lambda_normal}}
+  train_num_rays: -1 # should be -1 when lambda_normal_smooth is zero
+  box_crop: True
+  box_crop_mask_thr: 0.1
+  box_crop_ds: 4
+  box_crop_context: 0.1 # The amount of additional padding added to each dimention of the cropping bounding box, relative to vox size.  
+  random_camera: # threestudio/data/uncond.py -> RandomCameraDataModuleConfig
+    visibility_mesh_f: ""
+    height: [64, 128, 128]
+    width: [64, 128, 128]
+    batch_size: [8, 4, 4]
+    resolution_milestones: [300, 600]
+    eval_height: 480
+    eval_width: 640
+    eval_camera_distance: 2.62 # calculate from MC1 condition camera
+    eval_batch_size: 1
+    camera_distance_range: [2.0, 2.0]
+    progressive_until: 0
+    camera_perturb: 0.0
+    center_perturb: 0.0
+    up_perturb: 0.0
+    light_position_perturb: 0.0
+    light_distance_range: [15., 20.0]
+    eval_fovy_deg: ${data.default_fovy_deg}
+    light_sample_strategy: "dreamfusion"
+    batch_uniform_azimuth: False
+    n_val_views: 30
+    n_test_views: 120
+  HOLD:
+    data_dir: ""
+    preprocess_dir: ""
+    log_dir: ""
+    debug: False
+    offset: 1
+    num_sample: 128
+
+  data_type: "real_image_foundation_pose" # real_image_gt_pose or real_image_colmap_pose or blender
+  blender:
+    cam_type: blc2blw # "cvc2cvw" or "cvc2blw" or "blc2blw"
+    ref_views: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+    json_path: ${data.root_dir}
+    json_file: transforms_train.json
+
+  real_image_foundation_pose:
+    align_pose_type: teaser # PnP or teaser or None
+    cam_type: blc2blw # "cvc2cvw" or "glc2glw" or "blc2blw"
+    image_down_sample: 1
+    # scene: GPMF13
+    # inpaint_ind : "0097"
+    # ref_views: [97, 98, 99, 100, 101, 102]
+    # scene: AP10
+    # inpaint_ind : "0008"
+    # # ref_views: [8, 11, 14, 15, 16, 17]
+    # ref_views: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99]
+    # scene: ABF14
+    # inpaint_ind : "0017"
+    # # ref_views: [17, 25, 27, 81, 83, 84]
+    # ref_views: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99]
+    scene: MC1
+    inpaint_ind : 98
+    selected_ind: 98
+    # ref_views: [96, 97, 98, 99, 100, 101]
+    # ref_views: [98]
+    ref_views: [93, 95, 96, 97, 98, 99, 100, 101, 103, 104, 105, 107, 109, 111]            
+    # ref_views: [98, 99, 100, 101, 103, 104, 105, 107, 113, 115]           
+    # ref_views: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99]
+    data_dir:    "/home/simba/Documents/project/diff_object/threestudio/dataset/HO3D_v3_foundation_pose"
+    rgb_path:    "${data.real_image_foundation_pose.data_dir}/${data.real_image_foundation_pose.scene}/images"
+    rgba_path:   "${data.real_image_foundation_pose.data_dir}/${data.real_image_foundation_pose.scene}/rgbas"
+    camera_path:   "${data.real_image_foundation_pose.data_dir}/${data.real_image_foundation_pose.scene}/cameras"
+    camera_PnP_align_path:   "${data.real_image_foundation_pose.data_dir}/${data.real_image_foundation_pose.scene}/cameras_pred"
+    camera_teaser_align_path:   "${data.real_image_foundation_pose.data_dir}/${data.real_image_foundation_pose.scene}/cameras_teaser"
+    mask_path:   "${data.real_image_foundation_pose.data_dir}/${data.real_image_foundation_pose.scene}/masks"
+    inpaint_f:   "${data.real_image_foundation_pose.data_dir}/${data.real_image_foundation_pose.scene}/inpaint/${data.real_image_foundation_pose.inpaint_ind}_rgba_center.png"
+    # inpaint_pose:   "${data.real_image_foundation_pose.data_dir}/${data.real_image_foundation_pose.scene}/inpaint/${data.real_image_foundation_pose.inpaint_ind}.json"
+
+  viz:
+    name: "diff_object"
+    save_cond_point_cloud: False
+    show_cameras: False
+    show_scene: False
+    pause: False
+    mesh_path: [
+                "./outputs/GPMF13/only_ref_Phase1/save/it1000-export/model.obj",
+                "./outputs/GPMF13/only_ref_Phase1_1/save/it1000-export/model.obj",
+                "./outputs/GPMF13/only_3d_Phase1/save/it1000-export/model.obj",
+                "./outputs/GPMF13/3d_ref_Phase1/save/it1000-export/model.obj",
+                # "/home/simba/Documents/project/BundleSDF/dataset/HO3D_v3/models/010_potted_meat_can/textured_simple.obj",                
+                # "./outputs/ABF14/3d_ref_Phase1/save/it1000-export/model.obj",
+                ] # or None
+    # mesh_path: ["./outputs/MC1_3d_only/Phase1/save/it600-export/model.obj"] # or None
+    # mesh_path: ["./outputs/MC1_ref_only/Phase1/save/it600-export/model.obj"] # or None
+    PC_path: [
+                "/home/simba/Documents/project/Hierarchical-Localization/outputs/GPMF13_teaser_corres/0081/query_corres.ply",
+                "/home/simba/Documents/project/Hierarchical-Localization/outputs/GPMF13_teaser_corres/0081/query_corr_align.ply",
+                "/home/simba/Documents/project/Hierarchical-Localization/outputs/GPMF13_teaser_corres/0081/cond_corres.ply",
+    ]
+    min_depth: 0
+    max_depth: 1
+    n_pts_per_ray: 10
+    show_mesh_texture: True             
+
+  align:
+    do_3d_guidance_only: False # do_ref_only False when do_3d_guidance_only True
+    do_ref_only: ${system.freq.do_ref_only}
+
+system_type: "zero123-system"
+system:
+  geometry_type: "implicit-sdf"
+  geometry:
+    radius: 1.0 # this value has been changed in the run_zero123xl.py and in fact take effect in geometry/base.py line 165
+    normal_type: finite_difference
+    # progressive eps from Neuralangelo
+    finite_difference_normal_eps: progressive
+
+    sdf_bias: sphere
+    sdf_bias_params: 0.5
+
+    # coarse to fine hash grid encoding
+    pos_encoding_config:
+      otype: ProgressiveBandHashGrid
+      n_levels: 12
+      n_features_per_level: 2
+      log2_hashmap_size: 19
+      base_resolution: 16
+      per_level_scale: 1.381912879967776 # max resolution 2048
+      start_level: 8 # resolution ~200
+      start_step: 2000
+      update_steps: 500
+
+  hand_type: "implicit-hand"
+  hand:
+    data_dir: ""
+
+  material_type: "diffuse-with-point-light-material"
+  material:
+    # diffuse_prob: 1.0
+    # textureless_prob: 0.05
+    # ambient_light_color: [1.0, 1.0, 1.0]
+    # diffuse_light_color: [0.0, 0.0, 0.0]
+    # ambient_only_steps: 300
+    ambient_only_steps: 100000
+    textureless_prob: 0.05
+    albedo_activation: sigmoid    
+
+  # background_type: "neural-environment-map-background"
+  # background:
+  #   color_activation: sigmoid
+
+  background_type: "solid-color-background" # unused
+
+  renderer_type: "neus-volume-renderer"
+  renderer:
+    radius: ${system.geometry.radius}
+    cos_anneal_end_steps: ${trainer.max_steps}
+    use_volsdf: true
+    eval_chunk_size: 8192
+    num_samples_per_ray: 256
+    debug: ${data.HOLD.debug}
+    log_dir: ${data.HOLD.log_dir}
+
+  prompt_processor_type: "dummy-prompt-processor" # Zero123 doesn't use prompts
+  prompt_processor:
+    pretrained_model_name_or_path: ""
+    prompt: ""
+
+  guidance_type: "zero123-guidance"
+  guidance:
+    pretrained_model_name_or_path: "./load/zero123/zero123-xl.ckpt"
+    # pretrained_model_name_or_path: "./load/zero123/105000.ckpt"
+    pretrained_config: "./load/zero123/sd-objaverse-finetune-c_concat-256.yaml"
+    vram_O: ${not:${gt0:${system.freq.guidance_eval}}}
+    guidance_scale: 5.0
+    min_step_percent: [0, 0.4, 0.2, 300]  # (start_iter, start_val, end_val, end_iter)
+    max_step_percent: [0, 0.85, 0.5, 300]
+    do_3d_guidance_only: ${data.align.do_3d_guidance_only}
+
+  freq:
+    ref_only_steps: 100
+    guidance_eval: 100
+    do_ref_only: False
+
+  weight:
+    gen_visibility_mesh: False
+
+  loggers:
+    wandb:
+      enable: false
+      project: "threestudio"
+      name: None
+
+  loss:
+    lambda_sds: 0.01
+    # lambda_2d: 0.03 #0.06 #0.025 #0.025
+    # lambda_3d:  0.5 #0.2  #.2 #0.25 #0.3 #0.5
+    lambda_rgb: 10.0
+    lambda_mask: 10.0
+    lambda_depth: 0.
+    lambda_depth_rel: 0.
+    lambda_normal: 0.
+    lambda_eikonal: 0.0
+    lambda_3d_normal_smooth: 0.
+    # lambda_depth: [0.0, 0.0, 1.0, 10000]
+    lambda_normal_smooth: 50.0
+    lambda_orient: 0.0 # only used when refinement is true
+    # lambda_orient: [1000, 0.0, 10, 6000]
+    lambda_sparsity: 0.0 # only used when refinement is true
+    lambda_opaque: 1.0 # only used when refinement is true
+
+  optimizer:
+    name: Adam
+    args:
+      lr: 0.01
+      betas: [0.9, 0.99]
+      eps: 1.e-8
+    params:
+      geometry.encoding:
+        lr: 0.05
+      geometry.feature_network:
+        lr: 0.005
+      geometry.sdf_network: #density
+        lr: 0.005
+      #background.network:
+      #  lr: 0.001
+
+trainer:
+  max_steps: 2000 # why more artifacts when increasing the max_steps
+  log_every_n_steps: 1
+  num_sanity_val_steps: 0
+  val_check_interval: 500
+  enable_progress_bar: true
+  precision: 16-mixed
+
+checkpoint:
+  save_last: true # save at each validation time
+  save_top_k: -1
+  every_n_train_steps: ${trainer.max_steps} # ${trainer.max_steps}
