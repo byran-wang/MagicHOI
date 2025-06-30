@@ -140,12 +140,24 @@
 
 <section class="hero teaser">
   <div class="column has-text-centered">
-    <img src="./static/images/teaser.jpg"
-         class="teaser-image"
-         alt="teaser."
-         style="width: 1200px; height: auto;"/>
+    <div style="width: 1400px; margin: 0 auto;">
+      <img src="./static/images/teaser.jpg"
+           class="teaser-image"
+           alt="teaser."
+           style="width: 100%; height: auto;" />
+      <br>
+      <br>
+      <p style="text-align: left;">
+        <i>
+          <strong>MagicHOI:</strong> Given a short-form monocular video sequence capturing hand-object interaction, our method reconstructs high-quality 3D object surfaces and a realistic hand-object spatial relationship, including occluded regions caused by hand interaction and object self-occlusion. <br>
+          (a) Input images and corresponding reconstructed surfaces of hand and object. <br>
+          (b, c) Comparison of our method with and without a 3D prior from the object’s front and back views, demonstrating improved reconstruction in occluded areas.
+        </i>
+      </p>
+    </div>
   </div>
 </section>
+
 
 
 <section class="hero is-light is-small">
@@ -214,31 +226,20 @@
         <h2 class="title is-3">Abstract</h2>
         <div class="content has-text-justified">
           <p>
-            We present the first method capable of photorealistically reconstructing a non-rigidly
-            deforming scene using photos/videos captured casually from mobile phones.
+            Most RGB-based hand-object reconstruction methods depend on object templates, and template-free approaches assume full object visibility. 
+            However, this assumption often fails in real-world scenarios, where cameras are fixed and objects are held in a static grip, causing parts of the object to remain unobserved and leading to unrealistic reconstructions.
           </p>
           <p>
-            Our approach augments neural radiance fields
-            (NeRF) by optimizing an
-            additional continuous volumetric deformation field that warps each observed point into a
-            canonical 5D NeRF.
-            We observe that these NeRF-like deformation fields are prone to local minima, and
-            propose a coarse-to-fine optimization method for coordinate-based models that allows for
-            more robust optimization.
-            By adapting principles from geometry processing and physical simulation to NeRF-like
-            models, we propose an elastic regularization of the deformation field that further
-            improves robustness.
+            To address this challenge, we introduce <strong>MagicHOI</strong>, a method for reconstructing hands and objects from short monocular interaction videos, even with limited view variations.
+            Our key insight is that, although paired 3D hand-object data is extremely scarce, large-scale diffusion models, such as image-to-3D models, provide abundant object supervision.
+            This additional supervision acts as a prior to help regularize unseen object regions during hand interactions.
           </p>
           <p>
-            We show that <span class="dnerf">Nerfies</span> can turn casually captured selfie
-            photos/videos into deformable NeRF
-            models that allow for photorealistic renderings of the subject from arbitrary
-            viewpoints, which we dub <i>"nerfies"</i>. We evaluate our method by collecting data
-            using a
-            rig with two mobile phones that take time-synchronized photos, yielding train/validation
-            images of the same pose at different viewpoints. We show that our method faithfully
-            reconstructs non-rigidly deforming scenes and reproduces unseen views with high
-            fidelity.
+            Leveraging this insight, MagicHOI integrates the image-to-3D diffusion model into the reconstruction framework. 
+            We further refine hand poses by incorporating hand-object interaction constraints. 
+            Our results demonstrate that MagicHOI significantly outperforms existing state-of-the-art template-free reconstruction methods. 
+            We also show that image-to-3D diffusion priors effectively regularize unseen object regions, enhancing 3D hand-object reconstruction.
+            Moreover, the improved object geometries lead to more accurate hand poses. 
           </p>
         </div>
       </div>
