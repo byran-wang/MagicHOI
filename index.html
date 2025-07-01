@@ -166,62 +166,57 @@
 
 
 
-<section class="hero is-light is-small">
-  <div class="hero-body">
-    <div class="container">
-      <div id="results-carousel" class="carousel results-carousel">
-        <div class="item item-steve">
-          <video poster="" id="steve" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/steve.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-chair-tp">
-          <video poster="" id="chair-tp" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/chair-tp.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-shiba">
-          <video poster="" id="shiba" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/shiba.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-fullbody">
-          <video poster="" id="fullbody" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/fullbody.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-blueshirt">
-          <video poster="" id="blueshirt" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/blueshirt.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-mask">
-          <video poster="" id="mask" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/mask.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-coffee">
-          <video poster="" id="coffee" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/coffee.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-toby">
-          <video poster="" id="toby" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/toby2.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
+
+<div class="columns is-centered has-text-centered" style="margin-top: 100px;">
+  <div class="column is-full">
+    <h2 class="title is-3" style="text-align: center;">Comparison to RGBD Camera</h2>
+      <p style="text-align: left;">We compare to common RGBD cameras including RealSense D435, Kinect Azure, Zed Mini. Ours uses the same stereo image from Zed as input. Different cameras may use different filtering steps for postprocessing, whereas the inlier point cloud accuracy should not be affected.</p>
+      <div style="display: flex; flex: none; align-items: center; justify-content: center; gap: 10px; margin-top: 10px;">
+        <p class="title is-5" style="margin: 0;">Scene:</p>
+        <span id="Nut" class="button scene_cam is-info is-rounded" onclick="change_scene_cam('Nut')">
+          Nut
+        </span>
+        <span id="Toolbox" class="button scene_cam is-black is-rounded" onclick="change_scene_cam('Toolbox')">
+          Toolbox
+        </span>
+        <span id="Bolts Pile" class="button scene_cam is-black is-rounded" onclick="change_scene_cam('Bolts Pile')">
+          Bolts Pile
+        </span>
+        <span id="Bolt" class="button scene_cam is-black is-rounded" onclick="change_scene_cam('Bolt')">
+          Bolt
+        </span>
       </div>
+      <div style="display: flex; flex: none; align-items: center; justify-content: center; gap: 10px; margin-top: 10px">
+        <p class="title is-5" style="margin: 0;">Result:</p>
+        <span id="Ours_cam" class="button method_cam is-info is-rounded" onclick="change_method_cam('Ours')">
+          Ours
+        </span>
+        <span id="Zed" class="button method_cam is-black is-rounded" onclick="change_method_cam('Zed')">
+          Zed
+        </span>
+        <span id="RealSense" class="button method_cam is-black is-rounded" onclick="change_method_cam('RealSense')">
+          RealSense
+        </span>
+        <span id="Kinect Azure" class="button method_cam is-black is-rounded" onclick="change_method_cam('Kinect Azure')">
+          Kinect Azure
+        </span>
+      </div>
+      <div style="display: flex; width: 100%; flex: none; text-align: center; justify-content: center; gap: 2px; margin-top: 10px; margin-bottom:0px">
+        <img id="left_cam" style="width: 40%; height: auto; display: block; object-fit: contain; ">
+        <model-viewer style="width: 50%; height: auto; aspect-ratio: 3/2; border: 1px solid black; display: inline-block; "
+          id="cloud_cam"
+          exposure="0.5"
+          max-camera-orbit="Infinity 180deg 100%"
+          min-camera-orbit="-Infinity -180deg 10%"
+          orientation="0deg 180deg 180deg"
+          camera-orbit="180deg 90deg 60%"
+          camera-controls touch-action="none">
+        </model-viewer>
+      </div>
+
     </div>
   </div>
-</section>
+</div>
 
 
 <section class="section">
