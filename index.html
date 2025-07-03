@@ -39,6 +39,7 @@
   <script src="./static/js/bulma-carousel.min.js"></script>
   <script src="./static/js/bulma-slider.min.js"></script>
   <script src="./static/js/index.js"></script>
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 </head>
 <body>
 
@@ -150,6 +151,8 @@
   </div>
 </section>
 
+
+
 <section class="hero teaser">
   <div class="column has-text-centered">
     <div style="width: 1400px; margin: 0 auto;">
@@ -217,6 +220,266 @@
   </div>
 </section>
 
+
+<section class="section">
+  <div class="container">
+    <div class="columns is-centered has-text-centered" style="margin-top: 100px;">
+      <div class="column is-full">
+        <h2 class="title is-3" style="text-align: center;">Comparison to SOTA Methods</h2>
+          <p style="text-align: center;">
+            <p style="text-align: center;">
+              <i>
+                We compare our method, which integrates geometry-driven and prior-driven approaches, with the geometry-driven only method <a href="https://zc-alexfan.github.io/hold" target="_blank">HOLD</a> and prior-driven only method <a href="https://lym29.github.io/EasyHOI-page/" target="_blank">EasyHOI</a>.
+              </i>
+            </p>
+          </p>
+          <div style="display: flex; flex: none; align-items: center; justify-content: center; gap: 10px; margin-top: 10px;">
+            <p class="title is-5" style="margin: 0;">Scene:</p>
+            <span id="MC1" class="button scene_cam is-info is-rounded" onclick="change_scene_cam('MC1')">
+              MC1
+            </span>
+            <span id="SM4" class="button scene_cam is-black is-rounded" onclick="change_scene_cam('SM4')">
+              SM4
+            </span>
+            <span id="ABF12" class="button scene_cam is-black is-rounded" onclick="change_scene_cam('ABF12')">
+              ABF12
+            </span>
+            <span id="GPMF12" class="button scene_cam is-black is-rounded" onclick="change_scene_cam('GPMF12')">
+              GPMF12
+            </span>
+          </div>
+          <div style="display: flex; flex: none; align-items: center; justify-content: center; gap: 10px; margin-top: 10px">
+            <p class="title is-5" style="margin: 0;">Method:</p>
+            <span id="Ours" class="button method_cam is-info is-rounded" onclick="change_method_cam('Ours')">
+              Ours
+            </span>
+            <span id="HOLD" class="button method_cam is-black is-rounded" onclick="change_method_cam('HOLD')">
+              HOLD
+            </span>
+            <span id="EasyHOI" class="button method_cam is-black is-rounded" onclick="change_method_cam('EasyHOI')">
+              EasyHOI
+            </span>
+          </div>
+          <div style="display: flex; width: 100%; flex: none; text-align: center; justify-content: center; gap: 2px; margin-top: 10px; margin-bottom:0px">
+            <video id="left_cam" style="width: 50%; height: auto; display: block; object-fit: contain;" autoplay muted loop controls>
+              Your browser does not support the video tag.
+            </video>            
+            <model-viewer style="width: 100%; height: auto; aspect-ratio: 3/2; border: 1px solid black; display: inline-block; "
+              id="cloud_cam"
+              exposure="0.5"
+              max-camera-orbit="Infinity 180deg 100%"
+              min-camera-orbit="-Infinity -180deg 10%"
+              orientation="0deg 180deg 180deg"
+              camera-orbit="180deg 90deg 60%"
+              camera-controls touch-action="none">
+            </model-viewer>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="columns is-centered has-text-centered" style="margin-top: 100px;">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3" style="text-align: center;">In-the-wild results of our method</h2>
+          <div style="display: flex; flex: none; align-items: center; justify-content: center; gap: 10px; margin-top: 10px;">
+            <p class="title is-5" style="margin: 0;">Scene:</p>
+            <span id="Controller" class="button scene_trans is-info is-rounded" onclick="change_scene_itw('Controller')">
+              Controller
+            </span>
+            <span id="Glue Gun" class="button scene_trans is-black is-rounded" onclick="change_scene_itw('Glue Gun')">
+              Glue Gun
+            </span>            
+            <span id="Osmo Pocket" class="button scene_trans is-black is-rounded" onclick="change_scene_itw('Osmo Pocket')">
+              Osmo Pocket
+            </span>
+            <span id="Toy Plane" class="button scene_trans is-black is-rounded" onclick="change_scene_itw('Toy Plane')">
+              Toy Plane
+            </span>
+            <!-- <span id="Hand Fan" class="button scene_trans is-black is-rounded" onclick="change_scene_itw('Hand Fan')">
+              Hand Fan
+            </span>             -->
+          </div>
+          <div style="display: flex; width: 100%; flex: none; text-align: center; justify-content: center; gap: 2px; margin-top: 10px; margin-bottom:0px">
+            <video id="left_trans" style="width: 40%; height: auto; display: block; object-fit: contain;" autoplay muted loop controls>
+              Your browser does not support the video tag.
+            </video>
+            <model-viewer style="width: 50%; height: auto; aspect-ratio: 3/2; border: 1px solid black; display: inline-block; "
+              id="cloud_trans"
+              exposure="0.5"
+              max-camera-orbit="Infinity 180deg 100%"
+              min-camera-orbit="-Infinity -180deg 10%"
+              orientation="0deg 180deg 180deg"
+              camera-orbit="180deg 90deg 60%"
+              camera-controls touch-action="none">
+            </model-viewer>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<script>
+  const cam_comparison = {
+    "SM4":{
+      "Ours":
+      {
+        "overlay":"static/comparison/ours/SM4/overlay.mp4",
+        'cloud': "static/comparison/ours/SM4/0011.glb"
+      },
+      "HOLD":
+      {
+        'overlay':'static/comparison/HOLD/SM4/overlay.mp4',
+        'cloud': "static/comparison/HOLD/SM4/0011.glb"
+      },
+      "EasyHOI":
+      {
+        'overlay':'static/comparison/EasyHOI/SM4/overlay.mp4',
+        'cloud': "static/comparison/EasyHOI/SM4/0000.glb"
+      },
+    },
+    "ABF12": {
+      "Ours":
+      {
+        "overlay":"static/comparison/ours/ABF12/overlay.mp4",
+        'cloud': "static/comparison/ours/ABF12/0026.glb"
+      },
+      "HOLD":
+      {
+        'overlay':'static/comparison/HOLD/ABF12/overlay.mp4',
+        'cloud': "static/comparison/HOLD/ABF12/0026.glb"
+      },
+      "EasyHOI":
+      {
+        'overlay':'static/comparison/EasyHOI/ABF12/overlay.mp4',
+        'cloud': "static/comparison/EasyHOI/ABF12/0000.glb"
+      },
+    },
+    "GPMF12": {
+      "Ours":
+      {
+        "overlay":"static/comparison/ours/GPMF12/overlay.mp4",
+        'cloud': "static/comparison/ours/GPMF12/0011.glb"
+      },
+      "HOLD":
+      {
+        'overlay':'static/comparison/HOLD/GPMF12/overlay.mp4',
+        'cloud': "static/comparison/HOLD/GPMF12/0011.glb"
+      },
+      "EasyHOI":
+      {
+        'overlay':'static/comparison/EasyHOI/GPMF12/overlay.mp4',
+        'cloud': "static/comparison/EasyHOI/GPMF12/0000.glb"
+      },
+    },
+    "MC1": {
+      "Ours":
+      {
+        "overlay":"static/comparison/ours/MC1/overlay.mp4",
+        'cloud': "static/comparison/ours/MC1/0012.glb"
+      },
+      "HOLD":
+      {
+        'overlay':'static/comparison/HOLD/MC1/overlay.mp4',
+        'cloud': "static/comparison/HOLD/MC1/0012.glb"
+      },
+      "EasyHOI":
+      {
+        'overlay':'static/comparison/EasyHOI/MC1/overlay.mp4',
+        'cloud': "static/comparison/EasyHOI/MC1/0000.glb"
+      },
+    }
+  }
+
+
+  const itw_data = {
+    "Glue Gun":{
+      "left":"static/itw/glue_gun/overlay.mp4",
+      "cloud": "static/itw/glue_gun/0000.glb",
+    },
+    "Controller":{
+      "left":"static/itw/controller/overlay.mp4",
+      "cloud": "static/itw/controller/0010.glb",
+    },
+    "Osmo Pocket":{
+      "left":"static/itw/osmo_pocket/overlay.mp4",
+      "cloud": "static/itw/osmo_pocket/0003.glb",
+    },
+    "Toy Plane":{
+      "left":"static/itw/toy_plane/overlay.mp4",
+      "cloud": "static/itw/toy_plane/0009.glb",
+    },
+    "Hand Fan":{
+      "left":"static/itw/hand_fan/overlay.mp4",
+      "cloud": "static/itw/hand_fan/0080.glb",
+    },
+  }
+
+
+  var cur_scene_cam = 'MC1';
+  var cur_method_cam = 'Ours'
+  var cur_scene_trans = 'Controller';
+  window.onload = () => {
+
+    const left_cam = document.getElementById('left_cam');
+    const cloud_cam = document.getElementById('cloud_cam');
+    const left_trans = document.getElementById('left_trans');
+    const cloud_trans = document.getElementById('cloud_trans');
+
+
+    left_cam.src = cam_comparison[cur_scene_cam][cur_method_cam]['overlay'];
+    cloud_cam.src = cam_comparison[cur_scene_cam][cur_method_cam]['cloud'];
+    left_trans.src = itw_data[cur_scene_trans]['left'];
+    cloud_trans.src = itw_data[cur_scene_trans]['cloud'];
+  };
+
+  function change_scene_cam(scene) {
+    cur_scene_cam = scene
+    const left_cam = document.getElementById('left_cam');
+    const buttons = document.querySelectorAll('.scene_cam');
+
+    // Update the image source based on the scene
+    left_cam.src = cam_comparison[scene][cur_method_cam]['overlay'];
+
+    // Update active button styling
+    buttons.forEach(button => button.className='button scene_cam is-black is-rounded');
+    document.getElementById(scene).className = 'button scene_cam is-info is-rounded'
+
+    change_method_cam(cur_method_cam)
+  }
+
+  function change_method_cam(method) {
+    const cloud_cam = document.getElementById('cloud_cam');
+    const left_cam = document.getElementById('left_cam');
+    const buttons = document.querySelectorAll('.method_cam');
+
+    cloud_cam.src = cam_comparison[cur_scene_cam][method]['cloud']
+    left_cam.src = cam_comparison[cur_scene_cam][method]['overlay']
+
+    // Update active button styling
+    buttons.forEach(button => button.className='button method_cam is-black is-rounded');
+    document.getElementById(method).className = 'button method_cam is-info is-rounded'
+  }
+
+  function change_scene_itw(scene) {
+    cur_scene_trans = scene
+    const left_trans = document.getElementById('left_trans');
+    const cloud_trans = document.getElementById('cloud_trans');
+    const buttons = document.querySelectorAll('.scene_trans');
+
+    // Update the image source based on the scene
+    left_trans.src = itw_data[scene]['left'];
+    cloud_trans.src = itw_data[scene]['cloud'];
+
+    // Update active button styling
+    buttons.forEach(button => button.className='button scene_trans is-black is-rounded');
+    document.getElementById(scene).className = 'button scene_trans is-info is-rounded'
+  }
+
+</script>
 
 <section class="section" id="BibTeX">
   <div class="container is-max-desktop content">
