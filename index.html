@@ -40,6 +40,14 @@
   <script src="./static/js/bulma-slider.min.js"></script>
   <script src="./static/js/index.js"></script>
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <style>
+    /* Global styles */
+    body {
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 1.3rem;
+      line-height: 1.6;
+    }
+  </style>  
 </head>
 <body>
 
@@ -122,7 +130,6 @@
               <h2 style="font-size: 1.5em; font-weight: bold; text-align: center;">
                 Code Coming Soon!
               </h2>          
-              <br>
               <!-- Code Link. -->
               <!-- <span class="link-block">
                 <a href="xxxx"
@@ -143,7 +150,6 @@
                   <span>Data</span>
                   </a>
             </div> -->
-
           </div>
         </div>
       </div>
@@ -155,7 +161,7 @@
 
 <section class="hero teaser">
   <div class="column has-text-centered">
-    <div style="width: 1400px; margin: 0 auto;">
+    <div style="width: 1300px; margin: 0 auto;">
       <img src="./static/images/teaser.jpg"
            class="teaser-image"
            alt="teaser."
@@ -179,12 +185,13 @@
 
 
 <section class="section">
-  <div class="container is-max-desktop">
+  <div class="column has-text-centered">
     <!-- Abstract. -->
+    <div style="width: 1600px; margin: 0 auto;">
     <div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
         <h2 class="title is-3">Abstract</h2>
-        <div class="content has-text-justified">
+        <div class="content has-text-justified" style="font-size: 1.3rem; font-family: 'Times New Roman', Times, serif;">
           <p>
             Most RGB-based hand-object reconstruction methods depend on object templates, and template-free approaches assume full object visibility. 
             However, this assumption often fails in real-world scenarios, where cameras are fixed and objects are held in a static grip, causing parts of the object to remain unobserved and leading to unrealistic reconstructions.
@@ -274,15 +281,15 @@
               camera-controls touch-action="none">
             </model-viewer>
           </div>
+        
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
 
-        </div>
-      </div>
-    </div>
-
-    <div class="columns is-centered has-text-centered" style="margin-top: 100px;">
-      <div class="column is-four-fifths">
-        <h2 class="title is-3" style="text-align: center;">In-the-wild results of our method</h2>
-          <div style="display: flex; flex: none; align-items: center; justify-content: center; gap: 10px; margin-top: 10px;">
+          <h2 class="title is-3" style="text-align: center;">In-the-wild results of our method</h2>
+          <div style="display: flex; flex: none; align-items: center; justify-content: center; gap: 10px; margin-top: 10px">
             <p class="title is-5" style="margin: 0;">Scene:</p>
             <span id="Controller" class="button scene_trans is-info is-rounded" onclick="change_scene_itw('Controller')">
               Controller
@@ -301,10 +308,10 @@
             </span>             -->
           </div>
           <div style="display: flex; width: 100%; flex: none; text-align: center; justify-content: center; gap: 2px; margin-top: 10px; margin-bottom:0px">
-            <video id="left_trans" style="width: 40%; height: auto; display: block; object-fit: contain;" autoplay muted loop controls>
+            <video id="left_trans" style="width: 80%; height: auto; display: block; object-fit: contain;" autoplay muted loop controls>
               Your browser does not support the video tag.
             </video>
-            <model-viewer style="width: 50%; height: auto; aspect-ratio: 3/2; border: 1px solid black; display: inline-block; "
+            <model-viewer style="width: 100%; height: auto; aspect-ratio: 3/2; border: 1px solid black; display: inline-block; "
               id="cloud_trans"
               exposure="0.5"
               max-camera-orbit="Infinity 180deg 100%"
@@ -313,8 +320,7 @@
               camera-orbit="180deg 90deg 60%"
               camera-controls touch-action="none">
             </model-viewer>
-          </div>
-
+          </div>          
         </div>
       </div>
     </div>
