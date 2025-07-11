@@ -47,6 +47,95 @@
       font-size: 1.3rem;
       line-height: 1.6;
     }
+    
+    /* Responsive design for laptop screens */
+    @media (max-width: 1440px) {
+      .publication-title {
+        font-size: 2.5rem !important;
+      }
+      
+      .is-size-5 {
+        font-size: 1rem !important;
+      }
+      
+      .title.is-3 {
+        font-size: 1.8rem !important;
+      }
+      
+      .content {
+        font-size: 1.1rem !important;
+      }
+    }
+    
+    @media (max-width: 1024px) {
+      .publication-title {
+        font-size: 2rem !important;
+      }
+      
+      .is-size-5 {
+        font-size: 0.9rem !important;
+      }
+      
+      .title.is-3 {
+        font-size: 1.5rem !important;
+      }
+      
+      .content {
+        font-size: 1rem !important;
+      }
+      
+      .hero-body {
+        padding: 2rem 1.5rem !important;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .publication-title {
+        font-size: 1.5rem !important;
+      }
+      
+      .is-size-5 {
+        font-size: 0.8rem !important;
+      }
+      
+      .title.is-3 {
+        font-size: 1.3rem !important;
+      }
+      
+      .content {
+        font-size: 0.9rem !important;
+      }
+      
+      .hero-body {
+        padding: 1.5rem 1rem !important;
+      }
+      
+      .link-block {
+        display: block !important;
+        margin: 0.5rem 0 !important;
+      }
+    }
+    
+    /* Ensure buttons and interactive elements are properly sized */
+    .button.is-normal {
+      font-size: 0.9rem !important;
+      padding: 0.5rem 1rem !important;
+    }
+    
+    /* Make video and model-viewer responsive */
+    video, model-viewer {
+      max-width: 100% !important;
+      height: auto !important;
+    }
+    
+    /* Improve spacing for laptop screens */
+    .section {
+      padding: 2rem 1.5rem !important;
+    }
+    
+    .hero-body {
+      padding: 3rem 1.5rem !important;
+    }
   </style>  
 </head>
 <body>
@@ -127,7 +216,7 @@
               </span>
               <!-- Contact Link. -->
               <span class="link-block">
-                <a href="swang457@connect.hkust-gz.edu.cn"
+                <a href="mailto:swang457@connect.hkust-gz.edu.cn"
                    class="external-link button is-normal is-rounded is-dark">
                   <span class="icon">
                       <i class="fas fa-envelope"></i>
@@ -171,7 +260,7 @@
 
 <section class="hero teaser">
   <div class="column has-text-centered">
-    <div style="width: 1300px; margin: 0 auto;">
+    <div style="max-width: 1200px; width: 90%; margin: 0 auto;">
       <img src="./static/images/teaser.jpg"
            class="teaser-image"
            alt="teaser."
@@ -197,7 +286,7 @@
 <section class="section">
   <div class="column has-text-centered">
     <!-- Abstract. -->
-    <div style="width: 1600px; margin: 0 auto;">
+    <div style="max-width: 1400px; width: 95%; margin: 0 auto;">
     <div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
         <h2 class="title is-3">Abstract</h2>
