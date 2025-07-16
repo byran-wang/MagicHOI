@@ -4,10 +4,10 @@ This is the repository that contains source code for the [MagicHOI website](http
 
 If you find MagicHOI useful for your work please cite:
 ```
-@article{park2021nerfies
-  author    = {xxx},
+@article{wang2024Magichoi
   title     = {MagicHOI: Leveraging 3D Priors for Accurate Hand-object Reconstruction from Short Monocular Video Clips},
-  journal   = {ICCV},
+  author    = {Shibo Wang and Haonan He and Maria Parelli and Christoph Gebhardt and Zicong Fan and Jie Song},
+  journal   = {Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV)},
   year      = {2025},
 }
 ```
