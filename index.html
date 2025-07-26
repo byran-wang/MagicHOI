@@ -33,6 +33,8 @@
         href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
   <link rel="stylesheet" href="./static/css/index.css">
   <link rel="icon" href="./static/images/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script defer src="./static/js/fontawesome.all.min.js"></script>
@@ -270,15 +272,54 @@
              playsinline>
         Your browser does not support the video tag.
       </video>
-      <br>
-      <br>
-              <p style="text-align: left;">
-          <i>
-            <strong>MagicHOI:</strong> Given a <strong>short-form</strong> monocular video sequence capturing hand-object interaction, our method reconstructs high-quality 3D object surfaces and a realistic hand-object spatial relationship, including <strong>occluded regions</strong> caused by hand interaction and object self-occlusion. <br>
-          </i>
-        </p>
     </div>
   </div>
+
+
+<section class="section">
+  <div class="column has-text-centered">
+    <!-- Abstract. -->
+    <div style="max-width: 1400px; width: 95%; margin: 0 auto;">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3" style="font-family: 'Roboto', sans-serif;">Abstract</h2>
+          <div class="content has-text-justified" style="font-size: 1.3rem; font-family: 'Roboto', sans-serif;">
+            <p>
+              Most RGB-based hand-object reconstruction methods depend on object templates, and template-free approaches assume full object visibility. 
+              However, this assumption often fails in real-world scenarios, where cameras are fixed and objects are held in a static grip, causing parts of the object to remain unobserved and leading to unrealistic reconstructions.
+            </p>
+            <p>
+              To address this challenge, we introduce <strong>MagicHOI</strong>, a method for reconstructing hands and objects from short monocular interaction videos, even with limited view variations.
+              Our key insight is that, although paired 3D hand-object data is extremely scarce, large-scale diffusion models, such as image-to-3D models, provide abundant object supervision.
+              This additional supervision acts as a prior to help regularize unseen object regions during hand interactions.
+            </p>
+            <p>
+              Leveraging this insight, MagicHOI integrates the image-to-3D diffusion model into the reconstruction framework. 
+              We further refine hand poses by incorporating hand-object interaction constraints. 
+              Our results demonstrate that MagicHOI significantly outperforms existing state-of-the-art template-free reconstruction methods. 
+              We also show that image-to-3D diffusion priors effectively regularize unseen object regions, enhancing 3D hand-object reconstruction.
+              Moreover, the improved object geometries lead to more accurate hand poses. 
+            </p>
+          </div>
+        </div>
+      </div>
+      <!--/ Abstract. -->
+
+      <!-- Paper video. -->
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3" style="font-family: 'Roboto', sans-serif;">Video</h2>
+          <div class="publication-video">
+            <iframe src="./static/videos/MagicHOI.mp4"
+                    frameborder="0" allow="encrypted-media" allowfullscreen></iframe>
+          </div>
+        </div>
+      </div>
+      <!--/ Paper video. -->
+    </div>
+  </div>
+</section>
+  
 
 
 
@@ -384,48 +425,6 @@
 
 
 
-<section class="section">
-  <div class="column has-text-centered">
-    <!-- Abstract. -->
-    <div style="max-width: 1400px; width: 95%; margin: 0 auto;">
-    <div class="columns is-centered has-text-centered">
-      <div class="column is-four-fifths">
-        <h2 class="title is-3">Abstract</h2>
-        <div class="content has-text-justified" style="font-size: 1.3rem; font-family: 'Times New Roman', Times, serif;">
-          <p>
-            Most RGB-based hand-object reconstruction methods depend on object templates, and template-free approaches assume full object visibility. 
-            However, this assumption often fails in real-world scenarios, where cameras are fixed and objects are held in a static grip, causing parts of the object to remain unobserved and leading to unrealistic reconstructions.
-          </p>
-          <p>
-            To address this challenge, we introduce <strong>MagicHOI</strong>, a method for reconstructing hands and objects from short monocular interaction videos, even with limited view variations.
-            Our key insight is that, although paired 3D hand-object data is extremely scarce, large-scale diffusion models, such as image-to-3D models, provide abundant object supervision.
-            This additional supervision acts as a prior to help regularize unseen object regions during hand interactions.
-          </p>
-          <p>
-            Leveraging this insight, MagicHOI integrates the image-to-3D diffusion model into the reconstruction framework. 
-            We further refine hand poses by incorporating hand-object interaction constraints. 
-            Our results demonstrate that MagicHOI significantly outperforms existing state-of-the-art template-free reconstruction methods. 
-            We also show that image-to-3D diffusion priors effectively regularize unseen object regions, enhancing 3D hand-object reconstruction.
-            Moreover, the improved object geometries lead to more accurate hand poses. 
-          </p>
-        </div>
-      </div>
-    </div>
-    <!--/ Abstract. -->
-
-    <!-- Paper video. -->
-    <div class="columns is-centered has-text-centered">
-      <div class="column is-four-fifths">
-        <h2 class="title is-3">Video</h2>
-        <div class="publication-video">
-          <iframe src="./static/videos/MagicHOI.mp4"
-                  frameborder="0" allow="encrypted-media" allowfullscreen></iframe>
-        </div>
-      </div>
-    </div>
-    <!--/ Paper video. -->
-  </div>
-</section>
 
 
 
