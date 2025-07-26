@@ -282,6 +282,7 @@
         </div>
       </div>
       <!--/ Teaser video. -->
+      <br>
 
       <div class="columns is-centered has-text-centered">
         <div class="column is-four-fifths">
@@ -302,7 +303,7 @@
       </div>
       
       <!--/ Abstract. -->
-
+      <br>
       <!-- Paper video. -->
       <div class="columns is-centered has-text-centered">
         <div class="column is-four-fifths">
@@ -321,104 +322,102 @@
 
 
 
-  <section class="section">
-    <div class="container">
-      <div class="columns is-centered has-text-centered" style="margin-top: 100px;">
-        <div class="column is-full">
-          <h2 class="title is-3" style="font-family: 'Roboto', sans-serif;">Comparison to SOTA Methods</h2>
-          <div class="content has-text-justified" style="font-size: 1.3rem; font-family: 'Roboto', sans-serif;">
-            <p>
-              We compare our method, which integrates geometry-driven and prior-driven approaches, with the geometry-driven only method <a href="https://zc-alexfan.github.io/hold" target="_blank">HOLD</a> 
-              and prior-driven only method <a href="https://lym29.github.io/EasyHOI-page/" target="_blank">EasyHOI</a> with limited views without full visibility.
-            </p>          
-            <div style="display: flex; flex: none; align-items: center; justify-content: center; gap: 10px; margin-top: 10px;">
-              <p class="title is-5" style="margin: 0;">Scene:</p>
-              <span id="MC1" class="button scene_cam is-info is-rounded" onclick="change_scene_cam('MC1')">
-                MC1
-              </span>
-              <span id="SM4" class="button scene_cam is-black is-rounded" onclick="change_scene_cam('SM4')">
-                SM4
-              </span>
-              <span id="ABF12" class="button scene_cam is-black is-rounded" onclick="change_scene_cam('ABF12')">
-                ABF12
-              </span>
-              <span id="GPMF12" class="button scene_cam is-black is-rounded" onclick="change_scene_cam('GPMF12')">
-                GPMF12
-              </span>
-            </div>
-            <div style="display: flex; flex: none; align-items: center; justify-content: center; gap: 10px; margin-top: 10px">
-              <p class="title is-5" style="margin: 0;">Method:</p>
-              <span id="Ours" class="button method_cam is-info is-rounded" onclick="change_method_cam('Ours')">
-                Ours
-              </span>
-              <span id="HOLD" class="button method_cam is-black is-rounded" onclick="change_method_cam('HOLD')">
-                HOLD
-              </span>
-              <span id="EasyHOI" class="button method_cam is-black is-rounded" onclick="change_method_cam('EasyHOI')">
-                EasyHOI
-              </span>
-            </div>
-            <div style="display: flex; width: 100%; flex: none; text-align: center; justify-content: center; gap: 2px; margin-top: 10px; margin-bottom:0px">
-              <video id="left_cam" style="width: 50%; height: auto; display: block; object-fit: contain;" muted loop controls>
-                Your browser does not support the video tag.
-              </video>            
-              <model-viewer style="width: 100%; height: auto; aspect-ratio: 3/2; border: 1px solid black; display: inline-block; "
-                id="cloud_cam"
-                exposure="0.5"
-                max-camera-orbit="Infinity 180deg 100%"
-                min-camera-orbit="-Infinity -180deg 10%"
-                orientation="0deg 180deg 180deg"
-                camera-orbit="180deg 90deg 60%"
-                shadow-intensity="0.8"               
-                camera-controls touch-action="none">
-              </model-viewer>
-            </div>
-          
-          <br>
-          <br>
-          <br>
-          <br>
-          <br>
-  
-            <h2 class="title is-3" style="text-align: center;">In-the-wild results of our method</h2>
-            <div style="display: flex; flex: none; align-items: center; justify-content: center; gap: 10px; margin-top: 10px">
-              <p class="title is-5" style="margin: 0;">Scene:</p>
-              <span id="Controller" class="button scene_trans is-info is-rounded" onclick="change_scene_itw('Controller')">
-                Controller
-              </span>
-              <span id="Glue Gun" class="button scene_trans is-black is-rounded" onclick="change_scene_itw('Glue Gun')">
-                Glue Gun
-              </span>            
-              <span id="Osmo Pocket" class="button scene_trans is-black is-rounded" onclick="change_scene_itw('Osmo Pocket')">
-                Osmo Pocket
-              </span>
-              <span id="Toy Plane" class="button scene_trans is-black is-rounded" onclick="change_scene_itw('Toy Plane')">
-                Toy Plane
-              </span>
-              <!-- <span id="Hand Fan" class="button scene_trans is-black is-rounded" onclick="change_scene_itw('Hand Fan')">
-                Hand Fan
-              </span>             -->
-            </div>
-            <div style="display: flex; width: 100%; flex: none; text-align: center; justify-content: center; gap: 2px; margin-top: 10px; margin-bottom:0px">
-              <video id="left_trans" style="width: 80%; height: auto; display: block; object-fit: contain;" muted loop controls>
-                Your browser does not support the video tag.
-              </video>
-              <model-viewer style="width: 100%; height: auto; aspect-ratio: 3/2; border: 1px solid black; display: inline-block; "
-                id="cloud_trans"
-                exposure="0.5"
-                max-camera-orbit="Infinity 180deg 100%"
-                min-camera-orbit="-Infinity -180deg 10%"
-                orientation="0deg 180deg 180deg"
-                camera-orbit="180deg 90deg 60%"
-                shadow-intensity="0.8"             
-                camera-controls touch-action="none">
-              </model-viewer>
-            </div>          
+<section class="section">
+  <div class="container">
+    <div class="columns is-centered has-text-centered" style="margin-top: 100px;">
+      <div class="column is-full">
+        <h2 class="title is-3" style="font-family: 'Roboto', sans-serif;">Comparison to SOTA Methods</h2>
+        <div class="content has-text-justified" style="font-size: 1.3rem; font-family: 'Roboto', sans-serif;">
+          <p>
+            We compare our method, which integrates geometry-driven and prior-driven approaches, with the geometry-driven only method <a href="https://zc-alexfan.github.io/hold" target="_blank">HOLD</a> 
+            and prior-driven only method <a href="https://lym29.github.io/EasyHOI-page/" target="_blank">EasyHOI</a> with limited views without full visibility.
+          </p>          
+          <div style="display: flex; flex: none; align-items: center; justify-content: center; gap: 10px; margin-top: 10px;">
+            <p class="title is-5" style="margin: 0;">Scene:</p>
+            <span id="MC1" class="button scene_cam is-info is-rounded" onclick="change_scene_cam('MC1')">
+              MC1
+            </span>
+            <span id="SM4" class="button scene_cam is-black is-rounded" onclick="change_scene_cam('SM4')">
+              SM4
+            </span>
+            <span id="ABF12" class="button scene_cam is-black is-rounded" onclick="change_scene_cam('ABF12')">
+              ABF12
+            </span>
+            <span id="GPMF12" class="button scene_cam is-black is-rounded" onclick="change_scene_cam('GPMF12')">
+              GPMF12
+            </span>
           </div>
+          <div style="display: flex; flex: none; align-items: center; justify-content: center; gap: 10px; margin-top: 10px">
+            <p class="title is-5" style="margin: 0;">Method:</p>
+            <span id="Ours" class="button method_cam is-info is-rounded" onclick="change_method_cam('Ours')">
+              Ours
+            </span>
+            <span id="HOLD" class="button method_cam is-black is-rounded" onclick="change_method_cam('HOLD')">
+              HOLD
+            </span>
+            <span id="EasyHOI" class="button method_cam is-black is-rounded" onclick="change_method_cam('EasyHOI')">
+              EasyHOI
+            </span>
+          </div>
+          <div style="display: flex; width: 100%; flex: none; text-align: center; justify-content: center; gap: 2px; margin-top: 10px; margin-bottom:0px">
+            <video id="left_cam" style="width: 50%; height: auto; display: block; object-fit: contain;" muted loop controls>
+              Your browser does not support the video tag.
+            </video>            
+            <model-viewer style="width: 100%; height: auto; aspect-ratio: 3/2; border: 1px solid black; display: inline-block; "
+              id="cloud_cam"
+              exposure="0.5"
+              max-camera-orbit="Infinity 180deg 100%"
+              min-camera-orbit="-Infinity -180deg 10%"
+              orientation="0deg 180deg 180deg"
+              camera-orbit="180deg 90deg 60%"
+              shadow-intensity="0.8"               
+              camera-controls touch-action="none">
+            </model-viewer>
+          </div>
+        
+        <br>
+        <br>
+
+
+          <h2 class="title is-3" style="text-align: center;">In-the-wild results of our method</h2>
+          <div style="display: flex; flex: none; align-items: center; justify-content: center; gap: 10px; margin-top: 10px">
+            <p class="title is-5" style="margin: 0;">Scene:</p>
+            <span id="Controller" class="button scene_trans is-info is-rounded" onclick="change_scene_itw('Controller')">
+              Controller
+            </span>
+            <span id="Glue Gun" class="button scene_trans is-black is-rounded" onclick="change_scene_itw('Glue Gun')">
+              Glue Gun
+            </span>            
+            <span id="Osmo Pocket" class="button scene_trans is-black is-rounded" onclick="change_scene_itw('Osmo Pocket')">
+              Osmo Pocket
+            </span>
+            <span id="Toy Plane" class="button scene_trans is-black is-rounded" onclick="change_scene_itw('Toy Plane')">
+              Toy Plane
+            </span>
+            <!-- <span id="Hand Fan" class="button scene_trans is-black is-rounded" onclick="change_scene_itw('Hand Fan')">
+              Hand Fan
+            </span>             -->
+          </div>
+          <div style="display: flex; width: 100%; flex: none; text-align: center; justify-content: center; gap: 2px; margin-top: 10px; margin-bottom:0px">
+            <video id="left_trans" style="width: 80%; height: auto; display: block; object-fit: contain;" muted loop controls>
+              Your browser does not support the video tag.
+            </video>
+            <model-viewer style="width: 100%; height: auto; aspect-ratio: 3/2; border: 1px solid black; display: inline-block; "
+              id="cloud_trans"
+              exposure="0.5"
+              max-camera-orbit="Infinity 180deg 100%"
+              min-camera-orbit="-Infinity -180deg 10%"
+              orientation="0deg 180deg 180deg"
+              camera-orbit="180deg 90deg 60%"
+              shadow-intensity="0.8"             
+              camera-controls touch-action="none">
+            </model-viewer>
+          </div>          
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
 
 
