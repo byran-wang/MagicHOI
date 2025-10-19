@@ -41,6 +41,28 @@ MagicHOI/
 ```
 
 
+## Tetrahedral Templates
+
+To speed up mesh abstraction we provide precomputed tetrahedral grids. Download `256_tets.npz` from [this link](https://hkustgz-my.sharepoint.com/:u:/g/personal/swang457_connect_hkust-gz_edu_cn/EZhqKKzunV9GhpoB8OHe6xcBjNyyyE0XkHRZaNqKPqa2uA?e=d7LwaI) and place it inside `<project_dir>/load/tets/`. The remaining resolutions can be generated locally:
+
+```bash
+python load/tets/generate_tets.py
+```
+
+After downloading or generating the files, the directory should resemble:
+
+```text
+MagicHOI/
+└── load/
+    └── tets/
+        ├── 32_tets.npz
+        ├── 64_tets.npz
+        ├── 128_tets.npz
+        ├── 256_tets.npz
+        └── generate_tets.py
+```
+
+
 ## Download Dataset for Training
 
 Download the preprocessed training sequences from [data.zip](https://hkustgz-my.sharepoint.com/:u:/g/personal/swang457_connect_hkust-gz_edu_cn/EUQyDbz62ZBEkKDptmyGI0QB2xVXl1Ad_yGDiQvorv8KnA?e=kM4ubM) and unpack the archive inside `<project_dir>/data/`:
