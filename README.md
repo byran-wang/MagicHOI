@@ -1,6 +1,8 @@
 ## [ICCV'25] MagicHOI: Leveraging 3D Priors for Accurate Hand-object Reconstruction from Short Monocular Video Clips
 
 [ [Project Page](https://byran-wang.github.io/MagicHOI) ]
+[ [Paper](https://openaccess.thecvf.com/content/ICCV2025/papers/Wang_MagicHOI_Leveraging_3D_Priors_for_Accurate_Hand-object_Reconstruction_from_Short_ICCV_2025_paper.pdf) ]
+[ [SupMat](https://openaccess.thecvf.com/content/ICCV2025/supplemental/Wang_MagicHOI_Leveraging_3D_ICCV_2025_supplemental.pdf) ]
 [ [ArXiv](https://arxiv.org/pdf/2508.05506) ]
 [ [Video](https://www.youtube.com/watch?v=G0gmHxgnDxA) ]
 
