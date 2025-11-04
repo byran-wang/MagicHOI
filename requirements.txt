@@ -16,7 +16,7 @@ pytorch-lightning==2.3.0
 scipy==1.10.1
 scikit-learn
 tqdm
-trimesh
+trimesh==3.23.5
 omegaconf
 plyfile
 moderngl-window==2.4.6

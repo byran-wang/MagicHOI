@@ -12,8 +12,8 @@ Authors: [Shibo Wang](https://byran-wang.github.io/ShiboWang), Haonan He, [Maria
 
 ### News
 
-- 2025.6.26: MagicHOI is accepted to ICCV'25!
 - 2025.10.18: MagicHOI beta is released!
+- 2025.6.26: MagicHOI is accepted to ICCV'25!
 
 <p align="left">
     <img src="./docs/static/teaser.png" alt="Image" width="80%"/>
@@ -37,7 +37,7 @@ This repository accompanies MagicHOI, a method for reconstructing hands and obje
 - [x] Hand-object alignment code  
 - [x] Evaluation code
 - [x] Result visualization
-- [ ] Custom dataset
+- [x] Custom dataset
 - [ ] In-the-wild dataset
 
 
@@ -45,6 +45,7 @@ This repository accompanies MagicHOI, a method for reconstructing hands and obje
 
 - [`docs/setup.md`](docs/setup.md)
 - [`docs/download.md`](docs/download.md)
+- [`docs/custom.md`](docs/custom.md)
 
 
 ### Getting Started
@@ -56,41 +57,51 @@ This repository accompanies MagicHOI, a method for reconstructing hands and obje
    cd MagicHOI; git submodule update --init --recursive
    ```
 
-1. **Set up environments**
+2. **Set up environments**
     - Follow the instructions here: [`docs/setup.md`](docs/setup.md).
-2. **Download**
+
+3. **Download**
     - Follow the instructions here: [`docs/download.md`](docs/download.md).
 
-3. **Train the object model on a preprocessed sequence**
+4. **Train the object model on a preprocessed sequence**
+   
+   Let's use the sequence `hold_MC1_ho3d.0` as an example. 
+   The available sequences for `--seq_list` are defined in the `all_sequences` list in `run.py`.
    ```bash
-   python run.py --execute_list only_3d --process_list rm train export --seq_list hold_MC1_ho3d.0
-   python run.py --mute --execute_list only_3d --process_list validate gen_cond_depth align save_align --seq_list hold_MC1_ho3d.0
-   python run.py --mute --execute_list only_ref --process_list rm train export --seq_list hold_MC1_ho3d.0   
-   python run.py --mute --execute_list 3d_ref --process_list rm train export --seq_list hold_MC1_ho3d.0
-   python run.py --mute --execute_list 3d_ref --process_list validate --seq_list hold_MC1_ho3d.0
-   python run.py --mute --execute_list 3d_ref_weight --process_list rm train export --seq_list hold_MC1_ho3d.0
+   seq_name=hold_MC1_ho3d.0 # run all the sequences if seq_name set to all
+   python run.py --execute_list only_3d --process_list rm train export --seq_list $seq_name
+   python run.py --mute --execute_list only_3d --process_list validate gen_cond_depth align save_align --seq_list $seq_name
+   python run.py --mute --execute_list only_ref --process_list rm train export --seq_list $seq_name
+   python run.py --mute --execute_list 3d_ref --process_list rm train export --seq_list $seq_name
+   python run.py --mute --execute_list 3d_ref --process_list validate --seq_list $seq_name
+   python run.py --mute --execute_list 3d_ref_weight --process_list rm train export --seq_list $seq_name
    ```
-4. **Align object to hand**
+5. **Align the object to the hand**
    ```bash
-   python run.py --execute_list 3d_ref_weight --process_list align_hand_object_h align_hand_object_r align_hand_object_o align_hand_object_ho --seq_list hold_MC1_ho3d.0 --rebuild
+   seq_name=hold_MC1_ho3d.0 # run all the sequences if seq_name set to all
+   python run.py --execute_list 3d_ref_weight --process_list align_hand_object_h align_hand_object_r align_hand_object_o align_hand_object_ho --seq_list $seq_name --rebuild
    ```
-5. **Visualize the reconstruction result**
-   - After reconstructing the object and aligning the hand to the object, visualize the hand-object pair with AITViewer.
-   - The available items for `--seq_list` can be obtained from `run.py`.
+6. **Visualize the reconstruction result**
+   - After reconstructing the object and aligning the hand to the object, visualize the hand–object pair with AITViewer.
    ```bash
-    python run.py --execute_list 3d_ref_weight --process_list vis_ait --seq_list hold_MC1_ho3d.0
+   seq_name=hold_MC1_ho3d.0 # run all the sequences if seq_name set to all
+   python run.py --execute_list 3d_ref_weight --process_list vis_ait --seq_list $seq_name
    ```
 
-6. **Evaluate the reconstruction result**
+7. **Evaluate the reconstruction result**
    - Evaluate results for all sequences against ground truth:
     ```bash
-    python run.py --execute_list 3d_ref_weight --process_list eval_step_ho_pose_refine --seq_list all --rebuild
+    seq_name=all
+    python run.py --execute_list 3d_ref_weight --process_list eval_step_ho_pose_refine --seq_list $seq_name --rebuild
     ```    
    - Merge the per-sequence evaluation results:
     ```bash
-    python run.py --execute_list 3d_ref_weight --process_list eval_summary_ho --seq_list hold_ABF12_ho3d.180 --rebuild
+    python run.py --execute_list 3d_ref_weight --process_list eval_summary_ho --seq_list hold_MC1_ho3d.0 --rebuild
     ```  
    - The merged metrics are written to `<project_dir>/outputs/metrics_summary/metrics_ho_pose_refine_results.txt`.
+8. **Prepare custom data**
+   
+   - You can capture an RGB video with your telephone and follow [`docs/custom.md`](docs/custom.md) to obtain segmentations and poses for the hand and object.  
 
 ### Official Citation 
 

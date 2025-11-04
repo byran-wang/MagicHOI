@@ -23,9 +23,10 @@ from scipy.spatial.transform import Rotation as R
 from scipy.spatial.transform import Slerp
 from tqdm import tqdm
 import json
-from utils_simba.depth import save_depth
 import shutil
-from utils_simba.depth import depth2xyzmap, xyz2depthmap
+import sys
+sys.path.append("./third_party/utils_simba")
+from utils_simba.depth import save_depth
 from utils_simba.geometry import convert_point_cloud
 
 import src.colmap.colmap_readmodel as read_model

@@ -60,11 +60,19 @@ def inpaint_input_views(config, do_inpaint=True, do_mask=True, do_center=True, w
         f.write(f"{inpaint_f_index}")
 
     InpaintAny_dir = "./third_party/Inpaint-Anything"
-    InpaintAny_py = "/home/simba/anaconda3/envs/chatcap/bin/python"
+    InpaintAny_py = os.path.expanduser(os.environ.get("PYINPAINT"))
+    if InpaintAny_py is None:
+        raise ValueError("Please set the PYINPAINT environment variable to the path of the Inpaint-Anything conda environment python executable.")
+    elif os.path.exists(InpaintAny_py) is False:
+        raise ValueError(f"The path {InpaintAny_py} set in PYINPAINT does not exist.")
     InpaintAny_script = "remove_anything.py"
 
     Cutie_dir = "./third_party/Cutie"
-    Cutie_py = "/home/simba/anaconda3/envs/py38cu118/bin/python"
+    Cutie_py = os.path.expanduser(os.environ.get("PYCUTIE"))
+    if Cutie_py is None:
+        raise ValueError("Please set the PYCUTIE environment variable to the path of the Cutie conda environment python executable.")
+    elif os.path.exists(Cutie_py) is False: 
+        raise ValueError(f"The path {Cutie_py} set in PYCUTIE does not exist.")
     Cutie_script = "interactive_demo.py"
     Cutie_workspace_dir = os.path.join(Cutie_dir, "workspace")
     # for i, inpaint_f in enumerate(inpaint_views):

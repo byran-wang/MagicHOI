@@ -2,178 +2,202 @@
 
 This document gives instructions to preprocess custom video sequences. 
 
-> ⚠️ We require several dependencies to create a custom sequence. See the [setup page](setup.md) for details before moving on from here. 
+
 
 ## Pipeline overview
 
 Overall, the preprocessing pipeline is as follows:
 
-0. Create dataset
-1. Image segmentation
-2. Hand pose estimation
+0. Dependency installation
+1. Create dataset scaffold
+2. Image segmentation
 3. Object pose estimation
-4. Hand-object alignment
-5. Build dataset
+4. Hand pose estimation
+5. Objcet inpainting
 
-This is the same for single-hand and two-hand cases. This preprocessing pipeline yields different artifacts. The created files and folders are explained in the [data documentation page](data_doc.md).
+## Dependency installation
+If you want to reconstruct a custom video sequence with MagicHOI, you will need to setup the following dependencies. Here we provide tested instructions to install them. For additional installation related issues, refer to the original repo.
 
-## Create dataset
+The the CUDA version in the following installation instruction is 11.8. If the CUDA is not consistent with your machine, you should modify the CUDA version.
 
-Given a new sequence called `hold_grape_0404`, we first create a folder for it, copy it to the folder, and parse its frames:
+
+
+
+### [Cutie](https://github.com/hkchengrex/Cutie)
+
+```bash
+conda create -y --name cutie python=3.8.18
+conda activate cutie
+conda install pytorch==2.0.1 torchvision==0.15.2 torchaudio==2.0.2 pytorch-cuda=11.8 -c pytorch -c nvidia
+cd <project_root_dir>/third_party/
+bash ./install/cutie.sh 
+```
+
+### [HLoc](https://github.com/cvg/Hierarchical-Localization)
+
+```bash
+conda create -y --name hloc python=3.9.17
+conda activate hloc
+conda install pytorch==2.0.1 torchvision==0.15.2 torchaudio==2.0.2 pytorch-cuda=11.8 -c pytorch -c nvidia
+cd <project_root_dir>/third_party/
+bash ./install/hloc.sh 
+```
+
+### [COLMAP](https://github.com/colmap/colmap)
+
+Following the installation documents in [COLMAP](https://github.com/colmap/colmap) to install colmap.
+
+
+### [HaMeR](https://github.com/geopavlakos/hamer)
+
+```bash
+conda create -y --name hamer python=3.10.14
+conda activate hamer
+conda install pytorch==2.0.1 torchvision==0.15.2 torchaudio==2.0.2 pytorch-cuda=11.8 -c pytorch -c nvidia
+cd <project_root_dir>/third_party/
+bash ./install/hamer.sh
+```
+### [Inpaint-Anything](https://github.com/geekyutao/Inpaint-Anything)
+
+```bash
+conda create -y --name inpaint python=3.9.19
+conda activate inpaint
+conda install pytorch==2.0.1 torchvision==0.15.2 torchaudio==2.0.2 pytorch-cuda=11.8 -c pytorch -c nvidia
+cd <project_root_dir>/third_party/
+bash ./install/inpaint.sh 
+```
+Download the [pretrained_models](https://drive.google.com/drive/folders/1ST0aRbDRZGli0r7OVVOQvXwtadMCuWXg), and put them in the `<project_dir>/third_party/Inpaint-Anything/pretrained_models`
+
+### Export the conda enviroment path
+
+```bash
+export PYCUTIE='~/anaconda3/envs/cutie/bin/python'
+export PYHLOC='~/anaconda3/envs/hloc/bin/python'
+export PYHAMER='~/anaconda3/envs/hamer/bin/python'
+export PYINPAINT='~/anaconda3/envs/inpaint/bin/python'
+```
+Feel free to put them inside your ~/.zshrc or ~/.bashrc depending on your shell.
+By default, python refers to '~/anaconda3/envs/MagicHOI/bin/python' in all documentations for simplicity.
+
+
+## Dataset folder
+
+Let's use the sequence `hold_MC1_ho3d` as an example. The sequence name can be choosed from the results of 'ls ./data'. Start from the project root and duplicate the raw images so the original data stays untouched:
 
 ```bash
 cdroot
-seq_name=hold_grape_0404
-mkdir -p ./data/$seq_name
-cp my/video/path/video.mp4 ./data/$seq_name/video.mp4
+seq_name=hold_MC1_ho3d
+mv data/$seq_name/processed data/$seq_name/processed_origin # back up the original processed folder
+mkdir -p data/$seq_name/build
+cp -r data/$seq_name/processed_origin/images data/$seq_name/build/
 ```
 
-Extract images from video: 
+## Segmentation with [Cutie](https://github.com/hkchengrex/Cutie)
 
-```
-python scripts/init_dataset.py --video_path ./data/$seq_name/video.mp4 --skip_every 2 # extract every 2 frames
-```
+The goal of this step is to extract hand and object masks for the input video. We rely on Cutie: you select the region of interest in the first frame and Cutie propagates the mask through the video.
 
-The option `--skip_every` allows you to downsample frames if the video is too long.
-
-## Segmentation
-
-The goal of this step is to extract hand and object masks for the input video. In particular, we use SAM-Track by first selecting the entity of interest in the first video frame. Then SAM-Track will annotate the rest of the video.
-
-
-Launch SAM-track server to label segmentation for starting frame:
-
-```bash
-cdroot; cd Segment-and-Track-Anything
-pysam app.py
-```
-
-Label the object:
-
-- Open the server page.
-- Click `Image-Seq type input`
-- Upload the zip version of `./data/$seq_name/images`
-- Click `extract`
-- Ajust `sam-gap` in `SegTrackerArgs` to the largest number.
-- Select `Click` and `Positive` to label the object.
-- Select `Click` and `Negative` to label region to avoid. 
-- Click `Start Tracking`
-- After the tracking is complete, you can copy the files under `./generator/Segment-and-Track-Anything/tracking_results/images/*` to the desination path (see below).
-
-The destination path has been created when you parsed the video:
-
-```bash
-./data/$seq_name/processed/sam/object
-```
-
-After copying the segmentation files, we expect file structure like this:
-
-```bash
-➜  cd ./data/$seq_name/processed/sam/object; ls
-images_masks
-```
-
-Now we repeat the same process to label the hand(s) and save results to the corresponding folder. After you have all masks, the command below will merge them and create object-only images:
-
-```bash
-cdroot; pyhold scripts/validate_masks.py --seq_name $seq_name
-```
-
-## Hand pose estimation
-
-
-### Using HAMER hand tracker (strongly recommended)
-
-Since HAMER has hand detection, we can directly estimate 3D left and right hand poses. Run the commands below to estimate hand meshes and register MANO to them:
-
-```bash
-cdroot; cd hamer
-pyhamer demo.py --seq_name $seq_name --batch_size=2  --full_frame --body_detector regnety
-```
-
-Register MANO model to predicted meshes: 
+Follow the installation guide in the Cutie repository, then launch the labeling tool:
 
 ```bash
 cdroot
-pyhold scripts/register_mano.py --seq_name $seq_name --save_mesh #--hand_type right --use_beta_loss
+seq_name=hold_MC1_ho3d
+seq_name_with_suffix=$seq_name.0  # NOTE: include the suffix when selecting from all_sequences list in run.py
+python run.py  --execute_list only_3d --process_list images_to_video ho_mask --seq_list $seq_name_with_suffix --rebuild
 ```
+This command opens two Cutie windows: the first for object segmentation and the second for hand segmentation.
 
-Note: If your video has only 1 hand, you can use `--hand_type right` or `--hand_type left` to register the corresponding hand; If not specified, this option will default to registering left and right hands. The rest of the code will behave differently based on the number of hand types registered in this step. The flag `--use_beta_loss` encourages the hand shape to be near zero and often has faster convergence.
+Cutie usage tips:
+1. Right-click to add a positive prompt.
+2. Left-click to add a negative prompt.
+3. After providing prompts on the first frame, click **Propagete forward** to propagate the segmentation.
+4. When all frames look correct, click **Export binary masks** to write the masks.
+5. Use the left/right arrow keys to move between frames and refine masks with additional prompts.
 
-After registeration, run this to linearly interpolate missing frames:
+After running `scripts/ho_mask.py`, `data/$seq_name/processed/` should contain:
+```text
+MagicHOI/
+└── ./data/$seq_name/processed
+                        ├── images/
+                        ├── masks/
+                        └── rgbas/
+```
+## Object pose estimation with [HLoc](https://github.com/cvg/Hierarchical-Localization) and [COLMAP](https://github.com/colmap/colmap)
 
+Run HLoc to estimate the object pose and sparse point cloud, then run MVS to produce dense points and depth maps. These outputs let us align the COLMAP coordinates to the generated object coordinate from the novel view synthesis (NVS) model.
+
+Use the sequence `hold_MC1_ho3d` as an example.
 ```bash
-pyhold scripts/validate_hamer.py --seq_name $seq_name
+cdroot
+seq_name=hold_MC1_ho3d
+seq_name_with_suffix=$seq_name.0  # NOTE: include the suffix when selecting from all_sequences list in run.py
+python run.py --mute --execute_list only_3d --process_list colmap validate_colmap gen_HO3D --seq_list $seq_name_with_suffix --rebuild
 ```
 
-### Using METRO hand tracker (CVPR paper method)
-
-We used METRO in our CVPR paper. The METRO pipeline only support a single right hand. In details, we first use 100DoH detector to find hand bounding boxes:
-
-```bash
-cdroot; cd hand_detector.d2
-pydoh crop_images.py --scale 1.5 --seq_name $seq_name --min_size 256 --max_size 700
+After running the above command, `data/$seq_name/processed/` should contain:
+```text
+MagicHOI/
+└── ./data/$seq_name/processed
+                        ├── colmap_2d/
+                        └── colmap_$seq_name_with_suffix/
 ```
+Verify the pose by inspecting the reprojection overlays in `data/$seq_name/processed/colmap_2d`.
+View the sparse point cloud with `data/$seq_name/processed/colmap_$seq_name_with_suffix/sparse_points.ply`.
+Inspect the dense reconstruction at `data/$seq_name/processed/colmap_$seq_name_with_suffix/sfm_superpoint+superglue/mvs/fused.ply`.
 
-3D hand pose estimation via METRO (used in HOLD CVPR'24):
+## Hand pose estimation with [HaMeR](https://github.com/geopavlakos/hamer)
 
-```bash
-cdroot; cd MeshTransformer
-pymetro ./metro/tools/end2end_inference_handmesh.py  --resume_checkpoint ./models/metro_release/metro_hand_state_dict.bin --image_file_or_path ../data/$seq_name/processed/crop_image
-```
+Since HaMeR has hand detection, we can directly estimate hand poses.
+Use the sequence `hold_MC1_ho3d` as an example. You can pick another sequence name from the `all_sequences` list in `run.py`.
+Run the commands below to estimate MANO pose:
 
-Since METRO is non-parametric, we need to register MANO model to it. Then we replace METRO frames that have noisy prediction with SLERP results: 
 
 ```bash
 cdroot
-pyhold scripts/register_mano.py --seq_name $seq_name --save_mesh
-pyhold scripts/validate_metro.py --seq_name $seq_name
+seq_name=hold_MC1_ho3d
+seq_name_with_suffix=$seq_name.0  # NOTE: include the suffix when selecting from all_sequences list in run.py
+python run.py --execute_list only_3d --process_list rm_unused_images_after_colmap rebuild_hand crop_hand hand_pose_hamer validate_hamer --seq_list $seq_name_with_suffix --rebuild
 ```
-
-## Object pose estimation
-
-Run HLoc to obtain object pose and point cloud:
-
-```bash
-cdroot; pycolmap scripts/colmap_estimation.py --num_pairs 40 --seq_name $seq_name
+After running the above command, `data/$seq_name/processed/` should contain:
+```text
+MagicHOI/
+└── ./data/$seq_name/processed
+                        ├── 2d_keypoints/
+                        ├── crop_image/
+                        ├── hpe_vis/
+                        ├── boxes.npy
+                        ├── hold_fit.init.npy
+                        ├── hold_fit.slerp.npy
+                        ├── j2d.full.npy
+                        └── v3d.npy
 ```
+Verify the pose by inspecting the hand landmark reprojection overlays in `data/$seq_name/processed/2d_keypoints`.
 
-## Hand-object alignment
 
-Since HLoc (SfM) reconstructs object up to a scale, we need to estimate the object scale and align the hand and object in the same space through a fitting process below. Using HLoc intrinsics, we fit the hands such that their 2D projection is consistent with the new intrinsics `--mode h`; We freeze the hand and find the object scale and translations to encourage hand-object contact `--mode o`; Now that object is to scale, we jointly optimize both `--mode ho`.
 
+## Object inpainting with [Inpaint-Anything](https://github.com/geekyutao/Inpaint-Anything)
+We select a reference frame from the video to serve as a conditioning image for the NVS model. When the hand occludes the object in that frame, we apply the state-of-the-art Inpaint-Anything model to hallucinate the hidden regions.
+
+Use the sequence `hold_MC1_ho3d` as an example.
 ```bash
 cdroot
-pyhold scripts/align_hands_object.py --seq_name $seq_name --colmap_k --mode h
-pyhold scripts/align_hands_object.py --seq_name $seq_name --colmap_k --mode o
-pyhold scripts/align_hands_object.py --seq_name $seq_name --colmap_k --mode ho
+seq_name=hold_MC1_ho3d
+seq_name_with_suffix=$seq_name.0  # NOTE: include the suffix when selecting from all_sequences list in run.py
+python run.py --mute --execute_list only_3d --process_list inpaint --seq_list $seq_name_with_suffix --rebuild
+```
+Tip: adjust the conditioning-frame selection strategy via `cond_select_strategy` in `sequence_config.py`.
+
+Inpaint-Anything usage tips:
+1. Left-click hand to add an occluded prompt in the opening image window.
+2. Right-click and choose **Panning left** from the poping menu.
+3. Enter the desired **inpaint selected number** in the terminal.
+4. Follow the Cutie segmentation tips to obtain the object mask after inpainting.
+
+After running the above command, `data/$seq_name/processed/` should contain:
+```text
+MagicHOI/
+└── ./data/$seq_name/processed/inpaint
+                                ├── ${selected_id}_rgba_center.png
+                                └── ${selected_id}.json
 ```
 
-You can visualize the results at each stage with our custom viewer to debug any fitting issue:
 
-```bash
-cdroot
-pyait scripts/visualize_fits.py --seq_name $seq_name
-```
-
-In our CVPR experiments, we use the same loss weights for all sequences, but you can adjust the fitting weights here (`confs/generic.yaml`) if your sequence does not work out of the box.
-
-Warning⚠️: This visualization is usually the final step for quality assurance. Ideally, you will expect perfect object point cloud 2D reprojection, a reasonable scale of the object point cloud in side view, hand location is roughly near the object. If they all look good, it is good to build the dataset for training.
-
-## Build dataset
-
-Finally, we have all the artifacts needed. We can compile them into a dataset: 
-
-```bash
-cdroot; pyhold scripts/build_dataset.py --seq_name $seq_name
-```
-
-This "compilation" creates a "build" of the dataset under `./data/$seq_name/build/`. Files within "build" is all you need for HOLD to train. It also packs all needed data into a zip file, which you can transfer to your remote cluster to train HOLD on.
-
-## Tips for good quality capture
-
-- Closer hand and object to the camera in the video (better RGB pixel quality for reconstruction) but not too close as we do not model lens distortion. 
-- At each preprocessing step, we have visualization artifacts. This gives a general idea of off-the-shelf pose estimation. In general, the more accurate hand and object poses are, the better the surface reconstructions.
-- High framerate
-
-For any issues related to create custom video dataset, please refer to [here](https://github.com/zc-alexfan/hold/issues?q=+is%3Aissue+label%3Acustom-dataset+). If there is no solution, create an issue and label it `custom-dataset` for help. 

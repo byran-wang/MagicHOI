@@ -43,7 +43,7 @@ MagicHOI/
 
 ## Tetrahedral Templates
 
-To speed up mesh abstraction we provide precomputed tetrahedral grids. Download `256_tets.npz` from [this link](https://hkustgz-my.sharepoint.com/:u:/g/personal/swang457_connect_hkust-gz_edu_cn/EZhqKKzunV9GhpoB8OHe6xcBjNyyyE0XkHRZaNqKPqa2uA?e=d7LwaI) and place it inside `<project_dir>/load/tets/`. The remaining resolutions can be generated locally:
+To speed up mesh abstraction we provide precomputed tetrahedral grids. Download [256_tets.npz](https://hkustgz-my.sharepoint.com/:u:/g/personal/swang457_connect_hkust-gz_edu_cn/EZhqKKzunV9GhpoB8OHe6xcBjNyyyE0XkHRZaNqKPqa2uA?e=d7LwaI) and place it inside `<project_dir>/load/tets/`. The remaining resolutions can be generated locally:
 
 ```bash
 python load/tets/generate_tets.py

@@ -20,10 +20,6 @@ parser.add_argument('--hand_mask_path', type=str, default='', help='hand mask fo
 args = parser.parse_args()
 
 
-# out_mask_path = '/home/simba/Documents/project/hold-private/code/data/hezi/processed/masks'
-# object_mask_path = '/home/simba/Documents/project/hold-private/code/data/hezi/processed/masks_object'
-# hand_mask_path = '/home/simba/Documents/project/hold-private/code/data/hezi/processed/masks_hand'
-
 out_mask_path = args.out_mask_path
 object_mask_path = args.object_mask_path
 hand_mask_path = args.hand_mask_path

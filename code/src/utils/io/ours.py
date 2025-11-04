@@ -37,7 +37,6 @@ def load_data_diff_object(
         mvs_root = "", 
         object_mesh_f = "",
         ckpt_p = "",
-        # object_mesh_f = "/home/simba/Documents/project/diff_object/threestudio/outputs/hold_MC1_ho3d.80/3d_ref/save/it8500-export/model.obj",
         MANO_f = ""
         ):
     device = "cuda:0"
@@ -164,7 +163,6 @@ def load_data_step(
         mvs_root = "", 
         object_mesh_f = "",
         ckpt_p = "",
-        # object_mesh_f = "/home/simba/Documents/project/diff_object/threestudio/outputs/hold_MC1_ho3d.80/3d_ref/save/it8500-export/model.obj",
         MANO_f = "",
         common_fate = False,
         ):

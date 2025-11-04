@@ -3,6 +3,7 @@ import os
 import argparse
 import json
 import sys
+import time
 sys.path.append("third_party/utils_simba")
 from utils_simba.misc import merge_json
 parser = argparse.ArgumentParser()
@@ -49,7 +50,18 @@ parser.add_argument('--process_list',
             "align_hand_object_o",
             "align_hand_object_ho",
             "eval_step_ho_pose_refine",
-            "eval_summary_ho",            
+            "eval_summary_ho",
+            "colmap",
+            "validate_colmap",
+            "gen_HO3D",
+            "rm_unused_images_after_colmap",
+            "rebuild_hand",
+            "crop_hand",
+            "hand_pose_hamer",
+            "validate_hamer",
+            "inpaint",
+            "ho_mask",
+            "images_to_video"
              ],
     help="Specify the process option.", 
     nargs='+',  # To accept multiple values in a list
@@ -104,7 +116,7 @@ def export_cond_cam(args, cam_f):
     with open(cam_f, 'w') as f:
         json.dump(cam, f, indent=4)
 
-from sequence_config import sequences
+from sequence_config import sequences, THIRD_PARTY_PATH
 for seq in sequences:
     if seq["id"] not in selected_sequences:
         continue    
@@ -338,7 +350,7 @@ for seq in sequences:
             cmd += f" python code/align_hands_object.py "
             cmd += f" --seq_name {seq_name} "
             cmd += f" --colmap_path {seq['data_path']}/{seq_name}/{path_prefix}/colmap_{seq['id']}/ "
-            cmd += f" --object_dir /home/simba/Documents/project/diff_object/threestudio/outputs/{seq['id']}/{exe}/ "
+            cmd += f" --object_dir {current_path}/outputs/{seq['id']}/{exe}/ "
             cmd += f" --data_path {seq['data_path']}/{seq_name}/{path_prefix}/{exe}/ "
             cmd += f" --colmap_k "
             cmd += f" --mode {mode} "
@@ -405,3 +417,205 @@ for seq in sequences:
         for stage in ["ho"]:
             if f"eval_summary_{stage}" in process_list:
                 run_eval_summary(seq, exe, prefix, max_steps, current_path, args, stage)
+
+        if "colmap" in process_list:
+            pyhloc = os.path.expanduser(os.environ.get('PYHLOC'))
+            if pyhloc is None:
+                raise ValueError("Please set the PYHLOC environment variable to point to your pyhloc installation.")
+            elif os.path.exists(pyhloc) is False:
+                raise ValueError(f"PYHLOC path {pyhloc} does not exist.")
+
+            if args.rebuild:
+                cmd = ""
+                cmd += f" cd {seq['data_path']}/ && "
+                cmd += f" rm -rf {seq_name}/{path_prefix}/colmap_{seq['id']}/ "
+                print(f"{cmd}")
+                os.system(cmd)
+            try_cnt = 0
+            while True:
+                try_cnt += 1
+                fused_ply_path = f"{seq['data_path']}/{seq_name}/{path_prefix}/colmap_{seq['id']}/sfm_superpoint+superglue/mvs/fused.ply"
+                if os.path.exists(fused_ply_path) :
+                    print(f"fused.ply exists at {fused_ply_path}, stop colmap")
+                    break
+                elif try_cnt > 10:
+                    print(f"try {try_cnt} times, fused.ply does not exist at {fused_ply_path}, stop colmap")
+                    break
+                else:
+                    print(f"fused.ply does not exist at {fused_ply_path}, continue colmap")
+                    time.sleep(1)
+                cmd = ""
+                cmd += f" {pyhloc} code/colmap_estimation_diff_object.py "
+                cmd += f" --seq_name {seq_name} "
+                cmd += f" --selected_views \"{ref_views}\" "
+                # cmd += f" --num_pairs {int(0.5*len(ref_views))} "
+                num_pairs = min(40, int(0.5*len(ref_views)))
+                cmd += f" --num_pairs {num_pairs} "
+                cmd += f" --data_path {seq['data_path']}/{seq_name}/{path_prefix}/ "
+                cmd += f" --out_path {seq['data_path']}/{seq_name}/{path_prefix}/colmap_{seq['id']}/ "
+                # if args.mute:
+                #     cmd += f" --mute "
+                cmd += f" || true"
+                print(f"{cmd}")
+                os.system(cmd)
+
+        if "rm_unused_images_after_colmap" in process_list:
+            mvs_images_dir = f"{seq['data_path']}/{seq_name}/{path_prefix}/colmap_{seq['id']}/sfm_superpoint+superglue/mvs/images/"
+            if os.path.exists(mvs_images_dir):
+                colmap_valid_fs = [file for file in sorted(os.listdir(mvs_images_dir))]
+                for sub_foulder in ["images", "masks", "images_object", "images_object_hand", "rgbas"]:
+                    if os.path.exists(f"{seq['data_path']}/{seq_name}/{path_prefix}/{sub_foulder}"):
+                        for file_name in  sorted(os.listdir(f"{seq['data_path']}/{seq_name}/{path_prefix}/{sub_foulder}")):
+                            if file_name in colmap_valid_fs:
+                                continue
+                            else:
+                                os.remove(f"{seq['data_path']}/{seq_name}/{path_prefix}/{sub_foulder}/{file_name}")
+
+            print(f"rm unused images after colmap\n")
+        
+        if "validate_colmap" in process_list:
+            pyhloc = os.path.expanduser(os.environ.get('PYHLOC'))
+            if pyhloc is None:
+                raise ValueError("Please set the PYHLOC environment variable to point to your pyhloc installation.")
+            elif os.path.exists(pyhloc) is False:
+                raise ValueError(f"PYHLOC path {pyhloc} does not exist.")
+                        
+            # remmove last generated results
+            if args.rebuild:
+                cmd = ""
+                cmd += f" cd {seq['data_path']}/ && "
+                cmd += f" rm -rf {seq_name}/{path_prefix}/colmap_2d "
+                print(f"{cmd}")
+                os.system(cmd)
+
+            cmd = ""
+            cmd += f" {pyhloc} code/colmap_validate_diff_object.py "
+            cmd += f" --seq_name {seq_name} "
+            cmd += f" --data_path {seq['data_path']}/{seq_name}/{path_prefix}/ "
+            cmd += f" --out_path {seq['data_path']}/{seq_name}/{path_prefix}/colmap_{seq['id']}/ "
+            if args.mute:
+                cmd += f" --mute "
+            cmd += f" || true"
+            print(f"{cmd}")
+            os.system(cmd)
+
+        if "gen_HO3D" in process_list:
+            pyhloc = os.path.expanduser(os.environ.get('PYHLOC'))
+            if pyhloc is None:
+                raise ValueError("Please set the PYHLOC environment variable to point to your pyhloc installation.")
+            elif os.path.exists(pyhloc) is False:
+                raise ValueError(f"PYHLOC path {pyhloc} does not exist.")
+                        
+            cmd = ""
+            cmd += f" {pyhloc} code/colmap_gen_HO3D_diff_object.py "
+            cmd += f" --seq_name {seq_name} "
+            cmd += f" --out_path {seq['data_path']}/{seq_name}/{path_prefix}/colmap_{seq['id']}/ "
+            if args.mute:
+                cmd += f" --mute "
+            cmd += f" || true"
+            print(f"{cmd}")
+            os.system(cmd)            
+
+        if "rm_unused_images_after_colmap" in process_list:
+            mvs_images_dir = f"{seq['data_path']}/{seq_name}/{path_prefix}/colmap_{seq['id']}/sfm_superpoint+superglue/mvs/images/"
+            if os.path.exists(mvs_images_dir):
+                colmap_valid_fs = [file for file in sorted(os.listdir(mvs_images_dir))]
+                for sub_foulder in ["images", "masks", "images_object", "images_object_hand", "rgbas"]:
+                    if os.path.exists(f"{seq['data_path']}/{seq_name}/{path_prefix}/{sub_foulder}"):
+                        for file_name in  sorted(os.listdir(f"{seq['data_path']}/{seq_name}/{path_prefix}/{sub_foulder}")):
+                            if file_name in colmap_valid_fs:
+                                continue
+                            else:
+                                os.remove(f"{seq['data_path']}/{seq_name}/{path_prefix}/{sub_foulder}/{file_name}")
+
+            print(f"rm unused images after colmap\n")
+
+        if "rebuild_hand" in process_list:
+            cmd = ""
+            cmd += f" cd {seq['data_path']}/{seq_name}/{path_prefix}/ && "
+            cmd += f" rm -rf crop_image mano_fit_ckpt mesh_fit_vis mesh_fit_vis metro_vis 2d_keypoints boxes.npy hpe_vis j2d.crop.npy j2d.full.npy v3d.npy hold_fit.init.npy hold_fit.slerp.npy"
+            print(f"{cmd}")
+            os.system(cmd)
+
+        if "crop_hand" in process_list:
+            pyhamer = os.path.expanduser(os.environ.get('PYHAMER'))
+            if pyhamer is None:
+                raise ValueError("Please set the PYHAMER environment variable to point to your pyhamer installation.")
+            elif os.path.exists(pyhamer) is False:
+                raise ValueError(f"PYHAMER path {pyhamer} does not exist.")
+            
+            cmd = ""
+            cmd += f" cd {THIRD_PARTY_PATH}/hand_detector.d2 && "
+            cmd += f" {pyhamer} crop_images.py "
+            cmd += f" --scale 1.5 "
+            cmd += f" --seq_name {seq_name} "
+            cmd += f" --min_size 256 "
+            cmd += f" --max_size 700 "
+            print(f"{cmd}")
+            os.system(cmd)                    
+
+        if "hand_pose_hamer" in process_list:
+            pyhamer = os.path.expanduser(os.environ.get('PYHAMER'))
+            if pyhamer is None:
+                raise ValueError("Please set the PYHAMER environment variable to point to your pyhamer installation.")
+            elif os.path.exists(pyhamer) is False:
+                raise ValueError(f"PYHAMER path {pyhamer} does not exist.")
+                        
+            cmd = ""
+            cmd += f" cd {THIRD_PARTY_PATH}/hamer && "
+            cmd += f" {pyhamer} demo.py "
+            cmd += f" --seq_name {seq_name} "
+            cmd += f" --batch_size 2 "
+            cmd += f" --full_frame "
+            cmd += f" --body_detector vitdet "
+            cmd += f" --bbox_file {seq['data_path']}/{seq_name}/{path_prefix}/boxes.npy "
+            print(f"{cmd}")
+            os.system(cmd)            
+
+        if "validate_hamer" in process_list:
+            # cd ${CURRENT_DIR}/../generator && python ./scripts/validate_hamer.py --seq_name $seq_name
+            cmd = ""
+            cmd += f" python ./code/validate_hamer.py "
+            cmd += f" --seq_name {seq_name} "
+            print(f"{cmd}")
+            os.system(cmd)            
+
+        if "inpaint" in process_list:
+            if args.rebuild:
+                cmd = ""
+                cmd += f" rm -rf {seq['data_path']}/{seq_name}/{path_prefix}/inpaint/ "
+                print(f"{cmd}")
+                os.system(cmd)
+
+            ref_views_str = " ".join([f"{view:04d}" for view in ref_views])
+            cmd = ""
+            cmd += f" python code/inpaint.py "
+            cmd += f" --image_dir {seq['data_path']}/{seq_name}/{path_prefix}/images/ "
+            cmd += f" --out_dir {seq['data_path']}/{seq_name}/{path_prefix}/inpaint/ "
+            cmd += f''' --ref_views {ref_views_str} '''
+            cmd += f" --inpaint_select_strategy {seq['cond_select_strategy']} "
+            cmd += f" --cond_view {seq['cond_image']} "
+            print(f"{cmd}")
+            os.system(cmd)
+
+        if "images_to_video" in process_list:
+            if args.rebuild:
+                cmd = ""
+                cmd += f" rm -rf {seq['data_path']}/{seq_name}/video.mp4 "
+                print(f"{cmd}")
+                os.system(cmd)
+
+            cmd = ""
+            cmd += f"/usr/bin/ffmpeg -y -i {seq['data_path']}/{seq_name}/build/images/%04d.png "
+            cmd += f"-framerate 1 -c:v libx264 -profile:v high -crf 20 -pix_fmt yuv420p "
+            cmd += f'''-vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" '''
+            cmd += f"{seq['data_path']}/{seq_name}/video.mp4"
+            print(cmd)
+            os.system(cmd)
+
+
+        if "ho_mask" in process_list:
+            cmd = ""
+            cmd += f" python scripts/ho_mask.py --seq_name {seq_name} --data_path ./data "
+            print(f"{cmd}")
+            os.system(cmd)

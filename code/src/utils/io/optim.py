@@ -26,7 +26,6 @@ def load_data(
         sd_p,
         # align_p = "data/hold_MC1_ho3d/processed//hold_fit.aligned.npy",
         # pose_p = "data/hold_MC1_ho3d/processed//colmap_hold_MC1_ho3d.80/sfm_superpoint+superglue/mvs/o2w_normalized_aligned.npy",
-        # object_mesh_f = "/home/simba/Documents/project/diff_object/threestudio/outputs/hold_MC1_ho3d.80/3d_ref/save/it1000-export/model.obj",
         align_p = "",
         pose_p = "",
         object_mesh_f = "",        
