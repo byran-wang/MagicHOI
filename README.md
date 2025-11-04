@@ -12,6 +12,7 @@ Authors: [Shibo Wang](https://byran-wang.github.io/ShiboWang), Haonan He, [Maria
 
 ### News
 
+- 2025.11.04: MagicHOI v1.0.0 is released!
 - 2025.10.18: MagicHOI beta is released!
 - 2025.6.26: MagicHOI is accepted to ICCV'25!
 
