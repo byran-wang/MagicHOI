@@ -107,14 +107,14 @@ This repository accompanies MagicHOI, a method for reconstructing hands and obje
 ### Official Citation 
 
 ```bibtex
-@article{wang2025magichoi,
-  title={MagicHOI: Leveraging 3D Priors for Accurate Hand-object Reconstruction from Short Monocular Video Clips},
+@inproceedings{wang2025magichoi,
+  title={{MagicHOI}: Leveraging 3D Priors for Accurate Hand-object Reconstruction from Short Monocular Video Clips},
   author={Wang, Shibo and He, Haonan and Parelli, Maria and Gebhardt, Christoph and Fan, Zicong and Song, Jie},
-  journal={arXiv preprint arXiv:2508.05506},
+  booktitle={Proceedings of the IEEE/CVF International Conference on Computer Vision},
+  pages={5957--5968},
   year={2025}
 }
 ```
-
 
 
 ### Contact
