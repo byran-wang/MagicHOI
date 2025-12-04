@@ -56,6 +56,7 @@ conda activate hamer
 conda install pytorch==2.0.1 torchvision==0.15.2 torchaudio==2.0.2 pytorch-cuda=11.8 -c pytorch -c nvidia
 cd <project_root_dir>/third_party/
 bash ./install/hamer.sh
+bash ./install/100doh.sh
 ```
 ### [Inpaint-Anything](https://github.com/geekyutao/Inpaint-Anything)
 
