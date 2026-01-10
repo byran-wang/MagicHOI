@@ -59,6 +59,7 @@ This repository accompanies MagicHOI, a method for reconstructing hands and obje
    ```
 
 2. **Set up environments**
+    - I'd recommend having at least 24GB of system RAM for training.
     - Follow the instructions here: [`docs/setup.md`](docs/setup.md).
 
 3. **Download**

@@ -108,8 +108,8 @@ python run.py  --execute_list only_3d --process_list images_to_video ho_mask --s
 This command opens two Cutie windows: the first for object segmentation and the second for hand segmentation.
 
 Cutie usage tips:
-1. Right-click to add a positive prompt.
-2. Left-click to add a negative prompt.
+1. Left-click to add a positive prompt.
+2. Right-click to add a negative prompt.
 3. After providing prompts on the first frame, click **Propagete forward** to propagate the segmentation.
 4. When all frames look correct, click **Export binary masks** to write the masks.
 5. Use the left/right arrow keys to move between frames and refine masks with additional prompts.
